@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2023-05-21" view-index="0" gantt-divider-location="318" resource-divider-location="300" version="3.2.3230" locale="fr_FR">
+    <description/>
+    <view zooming-state="default:2" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="181" order="0"/>
+        <field id="tpd4" name="Date de début" width="68" order="1"/>
+        <field id="tpd5" name="Date de fin" width="68" order="2"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="color.recent">
+            <![CDATA[#9999ff #99ff99 #ff6666]]>
+        </option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Nom" width="210" order="0"/>
+        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="0" mon="0" tue="0" wed="0" thu="0" fri="0" sat="0"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" name="TP formatif 1" color="#8cb6ce" meeting="false" start="2023-05-09" duration="1" complete="0" thirdDate="2023-05-22" thirdDate-constraint="0" expand="true"/>
+        <task id="1" name="TP formatif 2" color="#8cb6ce" meeting="false" start="2023-05-22" duration="1" complete="0" thirdDate="2023-05-22" thirdDate-constraint="0" expand="true"/>
+        <task id="2" name="TP projet 1" color="#8cb6ce" meeting="false" start="2023-05-24" duration="1" complete="0" thirdDate="2023-05-22" thirdDate-constraint="0" expand="true"/>
+        <task id="3" name="TP projet 2" color="#8cb6ce" meeting="false" start="2023-05-31" duration="1" complete="0" thirdDate="2023-05-24" thirdDate-constraint="0" expand="true"/>
+        <task id="5" name="TP suivi" color="#8cb6ce" meeting="false" start="2023-06-02" duration="1" complete="0" thirdDate="2023-05-24" thirdDate-constraint="0" expand="true"/>
+        <task id="4" name="TP projet 3" color="#8cb6ce" meeting="false" start="2023-06-09" duration="1" complete="0" thirdDate="2023-05-24" thirdDate-constraint="0" expand="true"/>
+        <task id="6" name="Exam" color="#99ff99" meeting="false" start="2023-06-15" duration="1" complete="0" thirdDate="2023-06-09" thirdDate-constraint="0" expand="true">
+            <depend id="15" type="4" difference="0" hardness="Strong"/>
+        </task>
+        <task id="7" name="Livrable 1" color="#ff6666" meeting="false" start="2023-05-28" duration="1" complete="0" thirdDate="2023-05-22" thirdDate-constraint="0" priority="4" expand="true">
+            <depend id="11" type="4" difference="0" hardness="Strong"/>
+        </task>
+        <task id="8" name="Livrables 2 et 3" color="#ff6666" meeting="false" start="2023-06-11" duration="1" complete="0" thirdDate="2023-05-22" thirdDate-constraint="0" priority="4" expand="true"/>
+        <task id="9" name="Livrable 4" color="#ff6666" meeting="false" start="2023-06-19" duration="1" complete="0" thirdDate="2023-05-22" thirdDate-constraint="0" priority="4" expand="true">
+            <depend id="16" type="4" difference="0" hardness="Strong"/>
+        </task>
+        <task id="10" name="Gantt project" color="#9999ff" meeting="false" start="2023-05-22" duration="1" complete="0" thirdDate="2023-05-15" thirdDate-constraint="0" expand="true"/>
+        <task id="11" name="Conception BD" color="#9999ff" meeting="false" start="2023-05-22" duration="6" complete="0" thirdDate="2023-05-22" thirdDate-constraint="0" expand="true"/>
+        <task id="12" name="Flow Node-RED" color="#9999ff" meeting="false" start="2023-05-24" duration="5" complete="0" thirdDate="2023-05-22" thirdDate-constraint="0" expand="true"/>
+        <task id="13" name="Grafana + Docker" color="#9999ff" meeting="false" start="2023-05-24" duration="8" complete="0" thirdDate="2023-05-24" thirdDate-constraint="0" expand="true"/>
+        <task id="14" name="Script Php" color="#9999ff" meeting="false" start="2023-05-25" duration="16" complete="0" thirdDate="2023-05-24" thirdDate-constraint="0" expand="true">
+            <depend id="16" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="15" name="Interface web" color="#9999ff" meeting="false" start="2023-05-25" duration="21" complete="0" thirdDate="2023-05-25" thirdDate-constraint="0" expand="true">
+            <depend id="16" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="16" name="Version finale sur Github" color="#9999ff" meeting="false" start="2023-06-15" duration="4" complete="0" thirdDate="2023-05-25" thirdDate-constraint="0" expand="true"/>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
