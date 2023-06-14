@@ -21,40 +21,51 @@
     <main>
         <!-- Page log -->
        
-        <?php
-// Connexion à la base de données
-$servername = "localhost";
-$username = "root";
-$dbname = "SAE_23";
+       <?php
+// Vérifier l'authentification de l'administrateur
+$authenticated = false;
+$connection_error = false;
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+if (isset($_POST['nom_utilisateur']) && isset($_POST['mot_de_passe'])) {
+    $nom_utilisateur = $_POST['nom_utilisateur'];
+    $mot_de_passe = $_POST['mot_de_passe'];
 
-// Vérifier les erreurs de connexion
-if ($conn->connect_error) {
-    die("Erreur de connexion à la base de données : " . $conn->connect_error);
+    // Connexion à la base de données
+    $servername = "localhost";
+    $username = "root";
+    $password_db = "";
+    $dbname = "SAE_23";
+
+    $conn = new mysqli($servername, $username, $password_db, $dbname);
+
+    // Vérifier la connexion
+    if ($conn->connect_error) {
+        $connection_error = true;
+        echo "Échec de la connexion à la base de données: " . $conn->connect_error;
+    } else {
+        // Vérifier les identifiants de connexion de l'administrateur
+        $query = "SELECT * FROM administration WHERE login = ? AND mdp = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ss", $nom_utilisateur, $mot_de_passe);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $authenticated = true;
+        } else {
+            echo "<p class='error'>Identifiants de connexion invalides.</p>";
+        }
+
+        $stmt->close();
+        $conn->close();
+
+        if ($authenticated) {
+            // Redirection vers la page autre_page.php
+            header("Location: admin.php");
+            exit();
+        }
+    }
 }
-
-// Récupérer les données du formulaire
-$login = $_POST['login'];
-$mdp = $_POST['mdp'];
-
-// Requête pour vérifier les informations de connexion
-$sql = "SELECT * FROM administration WHERE login = '$login' AND mdp = '$mdp'";
-$result = $conn->query($sql);
-
-if ($result->num_rows == 1) {
-    // L'utilisateur est authentifié
-    echo "Connexion réussie!";
-    // Effectuez ici les actions appropriées (par exemple, rediriger l'utilisateur vers une autre page)
-    header("Location: admin.php");
-    exit();
-} else {
-    // Échec de la connexion
-    echo "Identifiants invalides!";
-}
-
-// Fermer la connexion à la base de données
-$conn->close();
 ?>
 
 
