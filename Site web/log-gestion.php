@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+       <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -20,60 +21,70 @@
 
     <main>
         <!-- Page log -->
-      
-        <?php
-// Informations de connexion à la base de données
-$serveur = "localhost";
-$utilisateur = "nom_utilisateur";
-$motDePasse = "mot_de_passe";
-$nomBaseDeDonnees = "nom_base_de_donnees";
+       
+       <?php
+// Vérifier l'authentification de l'administrateur
+$authenticated = false;
+$connection_error = false;
 
-// Connexion à la base de données
-$connexion = mysqli_connect($serveur, $utilisateur, $motDePasse, $nomBaseDeDonnees);
+if (isset($_POST['nom_utilisateur']) && isset($_POST['mot_de_passe'])) {
+    $nom_utilisateur = $_POST['nom_utilisateur'];
+    $mot_de_passe = $_POST['mot_de_passe'];
 
-// Vérification de la connexion
-if (!$connexion) {
-    die("Erreur de connexion à la base de données: " . mysqli_connect_error());
-}
+    // Connexion à la base de données
+    $servername = "localhost";
+    $username = "admin1";
+    $password_db = "passadmin1";
+    $dbname = "SAE_23";
 
-// Traitement du formulaire de connexion
-if (isset($_POST['submit'])) {
-    // Récupération des données saisies dans le formulaire
-    $nomUtilisateur = $_POST['nom_utilisateur'];
-    $motDePasse = $_POST['mot_de_passe'];
+    $conn = new mysqli($servername, $username, $password_db, $dbname);
 
-    // Requête SQL pour vérifier les informations d'identification de l'utilisateur
-    $requete = "SELECT * FROM utilisateurs WHERE nom_utilisateur = '$nomUtilisateur' AND mot_de_passe = '$motDePasse'";
-    $resultat = mysqli_query($connexion, $requete);
-
-    // Vérification du résultat de la requête
-    
-if (mysqli_num_rows($resultat) == 1) {
-    // L'utilisateur est authentifié avec succès
-    session_start();
-    $_SESSION['nom_utilisateur'] = $nomUtilisateur;
-
-    // Redirection vers la page appropriée après la connexion réussie
-    header("Location: gestion.php");
-    exit();
-
+    // Vérifier la connexion
+    if ($conn->connect_error) {
+        $connection_error = true;
+        echo "Échec de la connexion à la base de données: " . $conn->connect_error;
     } else {
-        // Les informations d'identification sont incorrectes
-        echo "Nom d'utilisateur ou mot de passe incorrect.";
+        // Vérifier les identifiants de connexion de l'administrateur
+        $query = "SELECT * FROM batiment WHERE login = ? AND mdp = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ss", $nom_utilisateur, $mot_de_passe);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $authenticated = true;
+
+            // Redirection vers les pages correspondantes en fonction du login
+            switch ($row['login']) {
+                case 'batE':
+                    header("Location: gestionBatE.php");
+                    break;
+                case 'batB':
+                    header("Location: gestionBatB.php");
+                    break;
+                default:
+                    // Page de gestion par défaut si le login n'est pas reconnu
+                    header("Location: gestionDefault.php");
+                    break;
+            }
+            exit();
+        } else {
+            echo "<p class='error'>Identifiants de connexion invalides.</p>";
+        }
+
+        $stmt->close();
+        $conn->close();
     }
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
+
+
     <title>Connexion</title>
-</head>
-<body>
     <h1>Connexion GESTION</h1>
     <form method="POST" action="">
-        <label for="nom_utilisateur">Nom d'utilisateur:</label>
+        <label for="nom_utilisateur">Nom utilisateur:</label>
         <input type="text" name="nom_utilisateur" required><br>
 
         <label for="mot_de_passe">Mot de passe:</label>
@@ -81,10 +92,8 @@ if (mysqli_num_rows($resultat) == 1) {
 
         <input type="submit" name="submit" value="Se connecter">
     </form>
-</body>
-</html>
 
-        
+       
     </main>
 
     <footer>
@@ -92,3 +101,7 @@ if (mysqli_num_rows($resultat) == 1) {
     </footer>
 </body>
 </html>
+
+
+
+    

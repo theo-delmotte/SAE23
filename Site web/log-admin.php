@@ -32,8 +32,8 @@ if (isset($_POST['nom_utilisateur']) && isset($_POST['mot_de_passe'])) {
 
     // Connexion à la base de données
     $servername = "localhost";
-    $username = "root";
-    $password_db = "";
+    $username = "admin1";
+    $password_db = "passadmin1";
     $dbname = "SAE_23";
 
     $conn = new mysqli($servername, $username, $password_db, $dbname);
@@ -72,7 +72,7 @@ if (isset($_POST['nom_utilisateur']) && isset($_POST['mot_de_passe'])) {
     <title>Connexion</title>
     <h1>Connexion ADMIN</h1>
     <form method="POST" action="">
-        <label for="nom_utilisateur">Nom d'utilisateur:</label>
+        <label for="nom_utilisateur">Nom utilisateur:</label>
         <input type="text" name="nom_utilisateur" required><br>
 
         <label for="mot_de_passe">Mot de passe:</label>

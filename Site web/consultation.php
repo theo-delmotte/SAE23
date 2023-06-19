@@ -1,83 +1,88 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon site web</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <title>Consultation des dernières valeurs de capteurs</title>
 </head>
+<link rel="stylesheet" href="./css/style.css">
 <body>
-    <header>
+<header>
         <nav>
             <ul>
                 <li><a href="index.php">Accueil</a></li>
                 <li><a href="log-admin.php">Administration</a></li>
                 <li><a href="log-gestion.php">Gestion</a></li>
-                <li><a href="consultation.php">Consultation</a></li>
+             
                 <li><a href="gestion-projet.php">Gestion de projet</a></li>
             </ul>
         </nav>
     </header>
+    <h1>Consultation des dernières valeurs de capteurs</h1>
+</br>
+    <?php
+// Étape 1 : Établir une connexion à la base de données
+$servername = "localhost";
+$username = "admin1";
+$password_db = "passadmin1";
+$dbname = "SAE_23";
 
-    <main>
-        <!-- Page de consultation -->
-       
-            <h2>Consultation</h2>
-            <!-- Contenu de la page consultation -->
-            <?php
-// Informations de connexion à la base de données
-$serveur = "localhost";
-$utilisateur = "nom_utilisateur";
-$motDePasse = "mot_de_passe";
-$nomBaseDeDonnees = "nom_base_de_donnees";
-
-// Connexion à la base de données
-$connexion = mysqli_connect($serveur, $utilisateur, $motDePasse, $nomBaseDeDonnees);
-
-// Vérification de la connexion
-if (!$connexion) {
-    die("Erreur de connexion à la base de données: " . mysqli_connect_error());
+$conn = new mysqli($servername, $username, $password_db, $dbname);
+if ($conn->connect_error) {
+    die("Connexion échouée : " . $conn->connect_error);
 }
 
-// Tableau pour stocker les dernières mesures avec la date
-$tableauMesures = array();
+// Étape 2 : Récupérer la dernière valeur de chaque capteur pour tous les bâtiments
+$query = "SELECT c.nom AS capteur_nom, c.type AS capteur_type, m.date, m.heure, m.valeur, b.nom AS batiment_nom, b.login
+          FROM capteur AS c
+          INNER JOIN batiment AS b ON c.ID_batiment = b.ID_batiment
+          INNER JOIN mesure AS m ON c.ID_capteur = m.ID_capteur
+          INNER JOIN (
+              SELECT MAX(ID_mesure) AS last_measure, ID_capteur
+              FROM mesure
+              GROUP BY ID_capteur
+          ) AS last ON m.ID_mesure = last.last_measure AND c.ID_capteur = last.ID_capteur
+          GROUP BY c.ID_capteur
+          ORDER BY b.nom";
 
-// Récupération des dernières mesures de 4 capteurs différents
-$capteurs = array("Capteur1", "Capteur2", "Capteur3", "Capteur4");
+$result = $conn->query($query);
 
-foreach ($capteurs as $capteur) {
-    // Requête SQL pour récupérer la dernière mesure et la date du capteur
-    $requete = "SELECT mesure, date_mesure FROM mesures WHERE capteur = '$capteur' ORDER BY date_mesure DESC LIMIT 1";
-    $resultat = mysqli_query($connexion, $requete);
+if ($result->num_rows > 0) {
+    // Étape 3 : Afficher les résultats
+    $current_batiment = "";
+    while ($row = $result->fetch_assoc()) {
+        $capteur_nom = $row['capteur_nom'];
+        $capteur_type = $row['capteur_type'];
+        $date = $row['date'];
+        $heure = $row['heure'];
+        $valeur = $row['valeur'];
+        $batiment_nom = $row['batiment_nom'];
+        $login = $row['login'];
 
-    // Vérification du résultat de la requête
-    if ($resultat && mysqli_num_rows($resultat) > 0) {
-        $row = mysqli_fetch_assoc($resultat);
+        // Vérifier si le bâtiment a changé
+        if ($current_batiment != $batiment_nom) {
+            $current_batiment = $batiment_nom;
+            echo "<h3>Bâtiment : $batiment_nom (Login : $login)</h3>";
+        }
 
-        // Ajout des données dans le tableau des mesures
-        $mesure = $row['mesure'];
-        $dateMesure = $row['date_mesure'];
-        $tableauMesures[$capteur] = array("mesure" => $mesure, "date" => $dateMesure);
-    } else {
-        // Le capteur n'a pas de mesure
-        $tableauMesures[$capteur] = array("mesure" => "N/A", "date" => "N/A");
+        // Afficher les informations de la dernière mesure
+        echo "<p>Capteur : $capteur_nom (Type : $capteur_type)</p>";
+        echo "<p>Date : $date</p>";
+        echo "<p>Heure : $heure</p>";
+        echo "<p>Valeur : $valeur</p>";
+        echo "<hr>";
+        
     }
+    
+} else {
+    echo "Aucun résultat trouvé.";
 }
 
-// Affichage du tableau des mesures
-foreach ($tableauMesures as $capteur => $donnees) {
-    $mesure = $donnees['mesure'];
-    $dateMesure = $donnees['date'];
-    echo "Capteur: $capteur | Dernière mesure: $mesure | Date: $dateMesure <br>";
-}
-
-// Fermeture de la connexion à la base de données
-mysqli_close($connexion);
+$conn->close();
 ?>
-    </main>
 
-    <footer>
-        <!-- Pied de page -->
-    </footer>
+
+
+
+
+
 </body>
 </html>
